@@ -9,6 +9,30 @@
 #define PORT 8080
 #define BUF_SIZE 512
 
+char *getinputurl(char *data, char *input) {
+	printf("got link creation request\n");
+	char *start = strstr(data, "create/");
+	char *src = strchr(start, '/');
+	char *end = strchr(src, ' ');
+	char fin[end-(src+1)];
+	strncpy(fin, src+1, end-(src+1));
+	//printf(fin); 
+	/*
+	if(strstr((const char *) &data, (const char *) &input) != NULL) {
+		printf("found input link\n");
+		char *path_start = strchr((const char *) &data, ' ');
+		//printf(path_start);
+		char *var_dec = strchr((const char *) &data, '?');
+		char *src_url = strchr(var_dec, '=');
+		char *end = strchr(src_url, ' ');
+		char src[end-src_url];
+		strncpy(src, src_url+1, end-(src_url+1));
+		printf(src);
+	}
+	*/
+
+}
+
 int main() {
 	int srv, client;
 	char *data[BUF_SIZE];
@@ -54,19 +78,9 @@ int main() {
 			char *base[1000];
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
 			if(strcmp((const char *) &base, create_request) == 0) {
-				printf("got link creation request\n");
-				if(strstr((const char *) &data, input) != NULL) {
-					printf("found input link\n");
-					char *path_start = strchr((const char *) &data, ' ');
-					//printf(path_start);
-					char *var_dec = strchr((const char *) &data, '?');
-					char *src_url = strchr(var_dec, '=');
-					char *end = strchr(src_url, ' ');
-					char src[end-src_url];
-					strncpy(src, src_url+1, end-(src_url+1));
-					printf(src);
-					close(client);
-				}
+				char *source_url = getinputurl((char *) &data, input);
+				puts(source_url);
+				close(client);
 			}
 			//puts((const char *) &data);
 		}
