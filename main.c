@@ -5,17 +5,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include "storage.h"
 
 #define PORT 8080
 #define BUF_SIZE 512
+#define SHURL_SIZE 10 // shortened url size
 
-char *getinputurl(char *data, char *input) {
+char *getinputurl(char *data) {
 	printf("got link creation request\n");
 	char *start = strstr(data, "create/");
 	char *src = strchr(start, '/');
 	char *end = strchr(src, ' ');
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
+	//return fin;
 	//printf(fin); 
 	/*
 	if(strstr((const char *) &data, (const char *) &input) != NULL) {
@@ -38,9 +41,8 @@ int main() {
 	char *data[BUF_SIZE];
 	struct sockaddr_in srvaddr, clientaddr;
 	char *create_request = "GET /create/";
-	char *input = "?urlenc=";
 	//char *rtmsg = "got link";
-	
+
 	srv = socket(AF_INET, SOCK_STREAM, 0);
 	if(srv == -1) {
 		perror("failed to create socket");
@@ -78,8 +80,14 @@ int main() {
 			char *base[1000];
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
 			if(strcmp((const char *) &base, create_request) == 0) {
-				char *source_url = getinputurl((char *) &data, input);
-				puts(source_url);
+				char *source_url = getinputurl((char *) &data);
+				//puts(source_url);
+				//char *test = store_short_link(SHURL_SIZE, "records.txt");
+				//printf(test);
+				FILE *db;
+				db = fopen("records.txt", "a");
+				fputs(source_url, db);
+				fclose(db);
 				close(client);
 			}
 			//puts((const char *) &data);
