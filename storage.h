@@ -1,1 +1,1 @@
-char *store_short_link(int length, char *filename);
+void store_short_link(int length, char *filename);

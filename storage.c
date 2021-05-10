@@ -12,9 +12,8 @@ char *store_short_link(int length, char *filename) {
 		//output[i] = &alphabet[index];
 		strncat((char *) &output, &alphabet[index], 1);
 	}
-	return output;
-	//FILE *file;	
-	//file = fopen(filename, "a+");
-	//fputs(output, file);
-	//fclose(file);
+	FILE *file;	
+	file = fopen(filename, "a");
+	fprintf(file, "%s}\n", output);
+	fclose(file);
 }

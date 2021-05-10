@@ -11,28 +11,17 @@
 #define BUF_SIZE 512
 #define SHURL_SIZE 10 // shortened url size
 
-char *getinputurl(char *data) {
+void getinputurl(char *data, char *filename) {
 	printf("got link creation request\n");
 	char *start = strstr(data, "create/");
 	char *src = strchr(start, '/');
 	char *end = strchr(src, ' ');
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
-	//return fin;
-	//printf(fin); 
-	/*
-	if(strstr((const char *) &data, (const char *) &input) != NULL) {
-		printf("found input link\n");
-		char *path_start = strchr((const char *) &data, ' ');
-		//printf(path_start);
-		char *var_dec = strchr((const char *) &data, '?');
-		char *src_url = strchr(var_dec, '=');
-		char *end = strchr(src_url, ' ');
-		char src[end-src_url];
-		strncpy(src, src_url+1, end-(src_url+1));
-		printf(src);
-	}
-	*/
+	FILE *recs;
+	recs = fopen(filename, "a");
+	fprintf(recs, "%s{", (const char *) &fin);
+	fclose(recs);
 
 }
 
@@ -49,8 +38,8 @@ int main() {
 		exit(1);
 	}
 
-
-	setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, 0, sizeof(srv));
+	int opt = 1;
+	setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 	memset(&srvaddr, 0, sizeof(srvaddr));	
 	srvaddr.sin_family = AF_INET;
 	srvaddr.sin_port = htons(PORT);
@@ -80,14 +69,10 @@ int main() {
 			char *base[1000];
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
 			if(strcmp((const char *) &base, create_request) == 0) {
-				char *source_url = getinputurl((char *) &data);
+				getinputurl((char *) &data, "records.txt");
 				//puts(source_url);
-				//char *test = store_short_link(SHURL_SIZE, "records.txt");
+				store_short_link(SHURL_SIZE, "records.txt");
 				//printf(test);
-				FILE *db;
-				db = fopen("records.txt", "a");
-				fputs(source_url, db);
-				fclose(db);
 				close(client);
 			}
 			//puts((const char *) &data);
