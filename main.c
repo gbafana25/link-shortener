@@ -20,9 +20,20 @@ void getinputurl(char *data, char *filename) {
 	strncpy(fin, src+1, end-(src+1));
 	FILE *recs;
 	recs = fopen(filename, "a");
-	fprintf(recs, "%s{", (const char *) &fin);
+	fprintf(recs, "%s{", fin);
 	fclose(recs);
 
+}
+
+void getshortenedurl(char *url, char *filename) {
+	char *start = strstr(url, "go/");
+	char *beg = strchr(start, '/');
+	char *end = strchr(beg, ' ');
+	char finished[end-(beg+1)];
+	strncpy(finished, beg+1, end-(beg+1));
+	printf("%s\n", (const char *) &finished);
+	FILE *storage;
+	storage = fopen(filename, "r");
 }
 
 int main() {
@@ -30,6 +41,7 @@ int main() {
 	char *data[BUF_SIZE];
 	struct sockaddr_in srvaddr, clientaddr;
 	char *create_request = "GET /create/";
+	char *access_request = "GET /go/";
 	//char *rtmsg = "got link";
 
 	srv = socket(AF_INET, SOCK_STREAM, 0);
@@ -68,14 +80,17 @@ int main() {
 			recv(client, data, BUF_SIZE, 0);
 			char *base[1000];
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
-			if(strcmp((const char *) &base, create_request) == 0) {
+			//strncpy((char * restrict) &acc_comp, (const char * restrict) &data, strlen(access_request));
+			if(strncmp((const char *) &base, create_request, strlen(create_request)) == 0) {
 				getinputurl((char *) &data, "records.txt");
-				//puts(source_url);
 				store_short_link(SHURL_SIZE, "records.txt");
-				//printf(test);
+				printf((const char *) &data);
 				close(client);
+			} 
+			else if(strncmp((const char *) &base, access_request, strlen(access_request)) == 0) {
+				close(client);
+				getshortenedurl((char *) &data, "records.txt");	
 			}
-			//puts((const char *) &data);
 		}
 	}
 }
