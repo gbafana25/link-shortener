@@ -31,9 +31,22 @@ void getshortenedurl(char *url, char *filename) {
 	char *end = strchr(beg, ' ');
 	char finished[end-(beg+1)];
 	strncpy(finished, beg+1, end-(beg+1));
-	printf("%s\n", (const char *) &finished);
 	FILE *storage;
 	storage = fopen(filename, "r");
+	char *line;
+	size_t size = 0;
+	while(getline(&line, &size, storage) != -1) {
+		char *s = strstr(line, "{");
+		char *e = strstr(s, "}");
+		char shorten[e-(s+1)];
+		strncpy(shorten, s+1, e-(s+1));
+		shorten[sizeof(shorten)] = '\0';
+		printf("%s\n", shorten);
+		
+		if(strncmp(finished, shorten, strlen(shorten)) == 0) {
+			printf("found match\n");
+		}
+	}
 }
 
 int main() {
@@ -86,7 +99,7 @@ int main() {
 				store_short_link(SHURL_SIZE, "records.txt");
 				printf((const char *) &data);
 				close(client);
-			} 
+			}
 			else if(strncmp((const char *) &base, access_request, strlen(access_request)) == 0) {
 				close(client);
 				getshortenedurl((char *) &data, "records.txt");	
