@@ -20,7 +20,7 @@ void getinputurl(char *data, char *filename) {
 	strncpy(fin, src+1, end-(src+1));
 	FILE *recs;
 	recs = fopen(filename, "a");
-	fprintf(recs, "%s{", fin);
+	fprintf(recs, "%s", fin);
 	fclose(recs);
 
 }
@@ -31,19 +31,20 @@ void getshortenedurl(char *url, char *filename) {
 	char *end = strchr(beg, ' ');
 	char finished[end-(beg+1)];
 	strncpy(finished, beg+1, end-(beg+1));
+	finished[sizeof(finished)] = '\0';
+	//printf("%s\n", finished);
 	FILE *storage;
 	storage = fopen(filename, "r");
 	char *line;
 	size_t size = 0;
 	while(getline(&line, &size, storage) != -1) {
-		char *s = strstr(line, "{");
-		char *e = strstr(s, "}");
+		char *s = strchr(line, '{');
+		char *e = strchr(s, '}');
 		char shorten[e-(s+1)];
 		strncpy(shorten, s+1, e-(s+1));
 		shorten[sizeof(shorten)] = '\0';
 		printf("%s\n", shorten);
-		
-		if(strncmp(finished, shorten, strlen(shorten)) == 0) {
+		if(strcmp(finished, shorten) == 0) {
 			printf("found match\n");
 		}
 	}
