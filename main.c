@@ -19,13 +19,12 @@ void getinputurl(char *data, char *filename) {
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
 	FILE *recs;
-	recs = fopen(filename, "a");
-	fprintf(recs, "%s", fin);
-	fclose(recs);
+	write_source_link(recs, "records.txt", fin);
 
 }
 
-void getshortenedurl(char *url, char *filename) {
+void getshortenedurl(char *url, char *filename, int recv) {
+	char *template_response = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 	char *start = strstr(url, "go/");
 	char *beg = strchr(start, '/');
 	char *end = strchr(beg, ' ');
@@ -46,6 +45,22 @@ void getshortenedurl(char *url, char *filename) {
 		printf("%s\n", shorten);
 		if(strcmp(finished, shorten) == 0) {
 			printf("found match\n");
+			int source_size = (int) (s-line);
+			char source_url[source_size];
+			char *response[sizeof(template_response) + sizeof(source_url) + 1];
+			memset(&source_url, 0, sizeof(source_url));
+			memset(&response, 0, sizeof(response));
+			strncpy(source_url, line, source_size);
+			strncat(response, template_response, strlen(template_response));
+			strncat(response, source_url, source_size);
+			strncat(response, "\r\n", 2);
+			send(recv, response, strlen(response), 0);
+			//printf("%s\n", response);
+			/*
+			strcat(response, "\0");
+			printf("%s\n", response);
+			//return (const char *) &source_url;
+			*/
 		}
 	}
 }
@@ -56,6 +71,9 @@ int main() {
 	struct sockaddr_in srvaddr, clientaddr;
 	char *create_request = "GET /create/";
 	char *access_request = "GET /go/";
+	//char *testr_size = (char *) sizeof(test_response);
+	//strncat(test_response, (const char *) &tesr_size, (sizeof(test_response)
+	
 	//char *rtmsg = "got link";
 
 	srv = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,8 +120,8 @@ int main() {
 				close(client);
 			}
 			else if(strncmp((const char *) &base, access_request, strlen(access_request)) == 0) {
+			 	getshortenedurl((char *) &data, "records.txt", client);
 				close(client);
-				getshortenedurl((char *) &data, "records.txt");	
 			}
 		}
 	}

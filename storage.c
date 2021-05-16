@@ -14,7 +14,17 @@ void store_short_link(int length, char *filename) {
 		strncat((char *) &output, (const char * restrict) &alphabet[index], 1);
 	}
 	FILE *file;	
-	file = fopen(filename, "a");
-	fprintf(file, "{%s}\n", output);
-	fclose(file);
+	write_short_link(file, filename, output);
+}
+
+void write_short_link(FILE *store, char *filename, char *contents) {
+	store = fopen(filename, "a");
+	fprintf(store, "{%s}\n", contents);
+	fclose(store);
+}
+
+void write_source_link(FILE *store, char *filename, char *contents) {
+	store = fopen(filename, "a");
+	fprintf(store, "%s", contents);
+	fclose(store);
 }
