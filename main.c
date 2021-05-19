@@ -30,7 +30,6 @@ void getshortenedurl(char *url, char *filename, int recv) {
 	char finished[end-(beg+1)];
 	strncpy(finished, beg+1, end-(beg+1));
 	finished[sizeof(finished)] = '\0';
-	//printf("%s\n", finished);
 	FILE *storage;
 	storage = fopen(filename, "r");
 	char *line;
