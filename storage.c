@@ -23,7 +23,8 @@ void write_short_link(FILE *store, char *filename, char *contents) {
 	fclose(store);
 }
 
-void write_source_link(FILE *store, char *filename, char *contents) {
+void write_source_link(char *filename, char *contents) {
+	FILE *store;
 	store = fopen(filename, "a");
 	fprintf(store, "%s", contents);
 	fclose(store);

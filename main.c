@@ -18,8 +18,7 @@ void getinputurl(char *data, char *filename) {
 	char *end = strchr(src, ' ');
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
-	FILE *recs;
-	write_source_link(recs, "records.txt", fin);
+	write_source_link("records.txt", fin);
 
 }
 
