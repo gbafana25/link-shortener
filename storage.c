@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-void store_short_link(int length, char *filename) {
+void get_short_link(int length, char *filename) {
 	char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	char *output[length];
 	memset(&output, 0, sizeof(output));
@@ -13,11 +13,11 @@ void store_short_link(int length, char *filename) {
 		//output[i] = &alphabet[index];
 		strncat((char *) &output, (const char * restrict) &alphabet[index], 1);
 	}
-	FILE *file;	
-	write_short_link(file, filename, output);
+	write_short_link(filename, output);
 }
 
-void write_short_link(FILE *store, char *filename, char *contents) {
+void write_short_link(char *filename, char *contents) {
+	FILE *store;
 	store = fopen(filename, "a");
 	fprintf(store, "{%s}\n", contents);
 	fclose(store);

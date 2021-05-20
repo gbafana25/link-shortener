@@ -19,6 +19,7 @@ void getinputurl(char *data, char *filename) {
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
 	write_source_link("records.txt", fin);
+	memset(&fin, '\0', sizeof(fin));
 
 }
 
@@ -113,7 +114,7 @@ int main() {
 			//strncpy((char * restrict) &acc_comp, (const char * restrict) &data, strlen(access_request));
 			if(strncmp((const char *) &base, create_request, strlen(create_request)) == 0) {
 				getinputurl((char *) &data, "records.txt");
-				store_short_link(SHURL_SIZE, "records.txt");
+				get_short_link(SHURL_SIZE, "records.txt");
 				printf((const char *) &data);
 				close(client);
 			}
