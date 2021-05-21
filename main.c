@@ -10,16 +10,17 @@
 #define PORT 8080
 #define BUF_SIZE 512
 #define SHURL_SIZE 10 // shortened url size
+#define STORE_FILE "records.txt"
 
-void getinputurl(char *data, char *filename) {
+void getinputurl(char *data) {
 	printf("got link creation request\n");
-	char *start = strstr(data, "create/");
-	char *src = strchr(start, '/');
+	char *src = strstr(data, "=");
+	//char *src = strchr(start, '/');
 	char *end = strchr(src, ' ');
 	char fin[end-(src+1)];
 	strncpy(fin, src+1, end-(src+1));
-	write_source_link("records.txt", fin);
-	memset(&fin, '\0', sizeof(fin));
+	write_source_link(STORE_FILE, fin);
+	memset(&fin, 0, sizeof(fin));
 
 }
 
@@ -68,7 +69,7 @@ int main() {
 	int srv, client;
 	char *data[BUF_SIZE];
 	struct sockaddr_in srvaddr, clientaddr;
-	char *create_request = "GET /create/";
+	char *create_request = "GET /create/?url=";
 	char *access_request = "GET /go/";
 	//char *testr_size = (char *) sizeof(test_response);
 	//strncat(test_response, (const char *) &tesr_size, (sizeof(test_response)
@@ -113,13 +114,13 @@ int main() {
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
 			//strncpy((char * restrict) &acc_comp, (const char * restrict) &data, strlen(access_request));
 			if(strncmp((const char *) &base, create_request, strlen(create_request)) == 0) {
-				getinputurl((char *) &data, "records.txt");
-				get_short_link(SHURL_SIZE, "records.txt");
+				getinputurl((char *) &data);
+				get_short_link(SHURL_SIZE, STORE_FILE);
 				printf((const char *) &data);
 				close(client);
 			}
 			else if(strncmp((const char *) &base, access_request, strlen(access_request)) == 0) {
-			 	getshortenedurl((char *) &data, "records.txt", client);
+			 	getshortenedurl((char *) &data, STORE_FILE, client);
 				close(client);
 			}
 		}
