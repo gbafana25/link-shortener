@@ -14,13 +14,13 @@
 
 void getinputurl(char *data) {
 	printf("got link creation request\n");
-	char *src = strstr(data, "=");
-	//char *src = strchr(start, '/');
+	char *start = strstr(data, "create/");
+	char *src = strchr(start, '/');
 	char *end = strchr(src, ' ');
 	char fin[end-(src+1)];
+	memset(&fin, 0, sizeof(fin));
 	strncpy(fin, src+1, end-(src+1));
 	write_source_link(STORE_FILE, fin);
-	memset(&fin, 0, sizeof(fin));
 
 }
 
@@ -69,7 +69,7 @@ int main() {
 	int srv, client;
 	char *data[BUF_SIZE];
 	struct sockaddr_in srvaddr, clientaddr;
-	char *create_request = "GET /create/?url=";
+	char *create_request = "GET /create/";
 	char *access_request = "GET /go/";
 	//char *testr_size = (char *) sizeof(test_response);
 	//strncat(test_response, (const char *) &tesr_size, (sizeof(test_response)
