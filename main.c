@@ -5,24 +5,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+
 #include "storage.h"
+#include "url.h"
 
 #define PORT 8080
 #define BUF_SIZE 512
 #define SHURL_SIZE 10 // shortened url size
 #define STORE_FILE "records.txt"
 
-void getinputurl(char *data) {
-	printf("got link creation request\n");
-	char *start = strstr(data, "create/");
-	char *src = strchr(start, '/');
-	char *end = strchr(src, ' ');
-	char fin[end-(src+1)];
-	memset(&fin, 0, sizeof(fin));
-	strncpy(fin, src+1, end-(src+1));
-	write_source_link(STORE_FILE, fin);
-
-}
 
 void getshortenedurl(char *url, char *filename, int recv) {
 	char *template_response = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
@@ -114,7 +105,7 @@ int main() {
 			strncpy((char * restrict) &base, (const char * restrict) &data, strlen(create_request));
 			//strncpy((char * restrict) &acc_comp, (const char * restrict) &data, strlen(access_request));
 			if(strncmp((const char *) &base, create_request, strlen(create_request)) == 0) {
-				getinputurl((char *) &data);
+				parse_url(data, "create/", STORE_FILE);
 				get_short_link(SHURL_SIZE, STORE_FILE);
 				printf((const char *) &data);
 				close(client);
