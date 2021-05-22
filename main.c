@@ -42,10 +42,10 @@ void getshortenedurl(char *url, char *filename, int recv) {
 			memset(&source_url, 0, sizeof(source_url));
 			memset(&response, 0, sizeof(response));
 			strncpy(source_url, line, source_size);
-			strncat(response, template_response, strlen(template_response));
-			strncat(response, source_url, source_size);
-			strncat(response, "\r\n", 2);
-			send(recv, response, strlen(response), 0);
+			strncat((char * restrict) &response, template_response, strlen(template_response));
+			strncat((char * restrict) &response, source_url, source_size);
+			strncat((char * restrict) &response, "\r\n", 2);
+			send(recv, (char * restrict) &response, strlen((const char *) &response), 0);
 			//printf("%s\n", response);
 			/*
 			strcat(response, "\0");

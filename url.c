@@ -13,5 +13,4 @@ void parse_url(char *data, char *start_string, char *filename) {
 	memset(&fin, 0, sizeof(fin));
 	strncpy(fin, src+1, end-(src+1));
 	write_source_link(filename, fin); 
-
 }

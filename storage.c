@@ -6,6 +6,7 @@
 #include <time.h>
 
 void get_short_link(int length, char *filename) {
+	char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 10\r\n";
 	char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 	char *output[length];
 	memset(&output, 0, sizeof(output));
@@ -15,7 +16,7 @@ void get_short_link(int length, char *filename) {
 		//output[i] = &alphabet[index];
 		strncat((char *) &output, (const char * restrict) &alphabet[index], 1);
 	}
-	write_short_link(filename, output);
+	write_short_link(filename, (char *) &output);
 }
 
 void write_short_link(char *filename, char *contents) {
