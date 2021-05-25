@@ -33,9 +33,7 @@ void getshortenedurl(char *url, char *filename, int recv) {
 		char shorten[e-(s+1)];
 		strncpy(shorten, s+1, e-(s+1));
 		shorten[sizeof(shorten)] = '\0';
-		printf("%s\n", shorten);
 		if(strcmp(finished, shorten) == 0) {
-			printf("found match\n");
 			int source_size = (int) (s-line);
 			char source_url[source_size];
 			char *response[sizeof(template_response) + sizeof(source_url) + 1];
@@ -106,8 +104,7 @@ int main() {
 			//strncpy((char * restrict) &acc_comp, (const char * restrict) &data, strlen(access_request));
 			if(strncmp((const char *) &base, create_request, strlen(create_request)) == 0) {
 				parse_url(data, "create/", STORE_FILE);
-				get_short_link(SHURL_SIZE, STORE_FILE);
-				printf((const char *) &data);
+				get_short_link(SHURL_SIZE, STORE_FILE, client);
 				close(client);
 			}
 			else if(strncmp((const char *) &base, access_request, strlen(access_request)) == 0) {
